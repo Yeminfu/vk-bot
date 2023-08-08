@@ -25,14 +25,21 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
   
-index = 0
+# index = 0
 
 for user in response['items']:
     photo_url = user['photo_200']
     relation = user.get('relation', None)
-    print(index, user['first_name'], user['last_name'], user['id'], user['is_closed'], photo_url, relation)
-    sql = "INSERT INTO users (fio,link) VALUES (%s, %s)"
-    val = (user['first_name'], user['id'])
-    mycursor.execute(sql, val)
+    # print(index, user['first_name'], user['last_name'], user['id'], user['is_closed'], photo_url, relation)
+    
+    user_sql = "INSERT INTO users (fio,link) VALUES (%s, %s)"
+    user_val = (user['first_name'], user['id'])
+    mycursor.execute(user_sql, user_val)
     mydb.commit()
-    index += 1
+    # index += 1
+    user_id = mycursor.lastrowid
+    photo_sql = "INSERT INTO photos (name, type, user) VALUES (%s, %s, %s)"
+    photo_val = (photo_url, "avatar", user_id)
+    mycursor.execute(photo_sql, photo_val)
+    mydb.commit()
+    
