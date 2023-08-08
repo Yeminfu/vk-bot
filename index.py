@@ -42,4 +42,3 @@ for user in response['items']:
     photo_val = (photo_url, "avatar", user_id)
     mycursor.execute(photo_sql, photo_val)
     mydb.commit()
-    
