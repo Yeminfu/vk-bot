@@ -7,6 +7,7 @@ type Inputs = {
     sex: number,
     online: number,
     age_from: string,
+    age_to: string,
 };
 
 export default function Filter(props: {
@@ -19,6 +20,7 @@ export default function Filter(props: {
             city: Number(props.searchParams.city),
             sex: 1,
             age_from: props.searchParams.age_from,
+            age_to: props.searchParams.age_to,
         }
     });
 
@@ -47,7 +49,8 @@ export default function Filter(props: {
                 </select>
             </div>
             <div>
-                <input type="тгьиук" {...register("age_from")} />
+                <input type="number" {...register("age_from")} />
+                <input type="number" {...register("age_to")} />
             </div>
             <input type="submit" />
         </form>

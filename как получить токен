@@ -1,5 +1,7 @@
 https://oauth.vk.com/authorize?client_id=АЙДИ_ПРИЛОЖЕНИЯ&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=photos,status,wall,friends,newsfeed&response_type=token&v=5.126&state=123456
 
+messages под вопросом
+
 В scope перечисляешь параметры, которым нужен доступ. Например: photos,status,wall. Параметр offline нужен для того, чтоб токен был вечный и не пришлось снова авторизовываться.
 
 После перехода по этой ссылке, открывается страница авторизации, где пользователь авторизуется. После авторизации, получаем конечную ссылку(она поменяется) и там будет access_token. Останется только вытащить ту часть ссылки

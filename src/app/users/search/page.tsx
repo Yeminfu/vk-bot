@@ -5,6 +5,7 @@ export interface SearchUsersInterface {
   city: number
   sex: number
   age_from: string
+  age_to: string
 }
 
 
@@ -17,11 +18,12 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
     version: '5.131',
     q: "",
     city: props.searchParams.city,
-    count: 100,
+    count: 1000,
     sex: props.searchParams.sex,
     offset: 0,
-    fields: ["photo_200", "relation", "can_write_private_message", "bdate", "photos"].join(","),
+    fields: ["photo_200", "relation", "can_write_private_message", "bdate", "city"].join(","),
     age_from: props.searchParams.age_from,
+    age_to: props.searchParams.age_to,
   };
 
   const { response } = await getUsers(searchUSersParameters).then(x => x.json());
@@ -39,17 +41,32 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
 
 
   return <>
-    <h1>Пользователи {count}</h1>
+    <h1>users {count}</h1>
     <Filter cities={cities} searchParams={props.searchParams} />
     <pre>{JSON.stringify(searchUSersParameters, null, 2)}</pre>
     {!users.length ? null : <table>
       <tbody>
         {users.map(user => <tr key={user.id}>
-          <td> <Link href={`https://vk.com/id${user.id}`}>{user.id}</Link>  </td>
+          <td><Link href={`https://vk.com/id${user.id}`}>{user.id}</Link></td>
           <td>{user.first_name}</td>
           <td>{user.last_name}</td>
+          <td>{(() => {
+            const relations: any = {
+              "1": "не женат/не замужем",
+              "2": "есть друг/есть подруга",
+              "3": "помолвлен/помолвлена",
+              "4": "женат/замужем",
+              "5": "всё сложно",
+              "6": "в активном поиске",
+              "7": "влюблён/влюблена",
+              "8": "в гражданском браке",
+              "0": "не указано",
+            }
+
+            return relations[user.relation] || "хз"
+          })()}</td>
           <td>{user.bdate}</td>
-          <td>{user.is_closed ? "закрыто" : "открыто"}</td>
+          <td>{user.can_write_private_message ? "открыто" : "закрыто"}</td>
           <td><img src={user.photo_200} /></td>
           <td><pre>{JSON.stringify(user, null, 2)}</pre></td>
         </tr>)}
@@ -71,6 +88,7 @@ interface UserUnterface {
   is_closed: boolean
   bdate?: string
   online: any
+  relation: number
 }
 
 
