@@ -2,13 +2,7 @@
 import { useForm } from "react-hook-form";
 import { SearchUsersInterface } from "./page";
 
-type Inputs = {
-    city: number,
-    sex: number,
-    online: number,
-    age_from: string,
-    age_to: string,
-};
+type Inputs = SearchUsersInterface;
 
 export default function Filter(props: {
     cities: { id: number, title: string }[]
@@ -21,6 +15,8 @@ export default function Filter(props: {
             sex: 1,
             age_from: props.searchParams.age_from,
             age_to: props.searchParams.age_to,
+            offset: props.searchParams.offset,
+            q: props.searchParams.q,
         }
     });
 
@@ -34,24 +30,43 @@ export default function Filter(props: {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-                <select {...register("city")}>
-                    <option >Город</option>
-                    {props.cities.map(citie => <option key={citie.id} value={citie.id}>{citie.title}</option>)}
-                </select>
-            </div>
-            <div>
-                <select {...register("sex")}>
-                    <option value="">{"Пол"}</option>
-                    <option value={0}>не указан</option>
-                    <option value={1}>женский</option>
-                    <option value={2}>мужской</option>
-                </select>
-            </div>
-            <div>
-                <input type="number" {...register("age_from")} />
-                <input type="number" {...register("age_to")} />
-            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>город</td>
+                        <td><select {...register("city")}>
+                            <option >Город</option>
+                            {props.cities.map(citie => <option key={citie.id} value={citie.id}>{citie.title}</option>)}
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>пол</td>
+                        <td><select {...register("sex")}>
+                            <option value="">{"Пол"}</option>
+                            <option value={0}>не указан</option>
+                            <option value={1}>женский</option>
+                            <option value={2}>мужской</option>
+                        </select></td>
+                    </tr>
+                    <tr>
+                        <td>возраст</td>
+                        <td>
+                            <input type="number" {...register("age_from")} placeholder="от" />
+                            <input type="number" {...register("age_to")} placeholder="до" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>offset</td>
+                        <td><input type="number" {...register("offset")} />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>q</td>
+                        <td><input type="string" {...register("q")} />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <input type="submit" />
         </form>
     );

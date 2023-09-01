@@ -1,13 +1,15 @@
 import Link from "next/link";
 import Filter from "./filter";
 import { db_connection } from "@/app/components/db";
-import { use } from "react";
+import { toast } from "react-toastify";
 
 export interface SearchUsersInterface {
   city: number
   sex: number
   age_from: string
   age_to: string
+  offset: number
+  q: string
 }
 
 
@@ -18,58 +20,67 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
     method: "users.search",
     access_token: String(process.env.VK_TOKEN),
     version: '5.131',
-    q: "",
+    q: props.searchParams.q,
     city: props.searchParams.city,
     count: 1000,
     sex: props.searchParams.sex,
-    offset: 0,
+    offset: Number(props.searchParams.offset),
     fields: ["photo_200", "relation", "can_write_private_message", "bdate", "city"].join(","),
     age_from: props.searchParams.age_from,
     age_to: props.searchParams.age_to,
   };
 
-  const { response } = await getUsers(searchUSersParameters).then(x => x.json());
+  const response = await getUsers(searchUSersParameters).then(x => x.json());
 
   const cities = await getCities(searchCitiesParameters)
     .then(x => x.json()).then(x => x.response.items);
 
-  if (!response) return <>
-    <h1>Пользователи </h1>
-    <Filter cities={cities} searchParams={props.searchParams} />
-  </>
+  if (!response?.response) {
+    toast.error(JSON.stringify(response, null, 2))
+    return <>
+      <h1>Пользователи </h1>
+      <Filter cities={cities} searchParams={props.searchParams} />
+    </>
+  }
+  const { count, items: users }: { count: number, items: UserUnterface[] } = response.response;
 
-  const { count, items: users }: { count: number, items: UserUnterface[] } = response;
 
-  // console.log(users);
-
+  let appended = 0;
 
   for (let index = 0; index < users.length; index++) {
     const user = users[index];
-    // console.log(user);
+    const newUser: number | null = await new Promise(resolve => {
+      db_connection.query(
+        "INSERT INTO users (fio, link, friends, is_closed, relation, can_write_private_message ) VALUES (?,?,?,?,?,?)",
+        [`${user.first_name} ${user.last_name}`, user.id, "", user.is_closed, user.relation, user.can_write_private_message],
+        function (err, res: any) {
+          if (err) {
+            resolve(null);
+            return;
+          }
+          resolve(res.insertId)
+        }
+      )
+    });
+    if (newUser) {
+      appended++;
+      db_connection.query(
+        "INSERT INTO photos (name,type,user  ) VALUES (?,?,?)",
+        [user.photo_200, 'avatar', newUser],
+        function (err, res: any) {
+          if (err) {
+            console.log('err #jdjf4jJc6', err);
+          }
+        }
+      )
+    };
 
-
-
-    db_connection.query(
-      "INSERT INTO users (fio, link, friends, is_closed, relation, can_write_private_message ) VALUES (?,?,?,?,?,?)",
-      [
-        `${user.first_name} ${user.last_name}`,
-        user.id,
-        "",
-        user.is_closed,
-        user.relation,
-        user.can_write_private_message
-      ],
-      function (err, res) {
-        console.log({ err, res });
-
-      }
-    )
-
-    break;
   }
 
+
+
   return <>
-    <h1>users {count}</h1>
+    <h1>users.search {count} (добавлено в бд {appended})</h1>
     <Filter cities={cities} searchParams={props.searchParams} />
     <pre>{JSON.stringify(searchUSersParameters, null, 2)}</pre>
     {!users.length ? null : <table>
@@ -135,7 +146,7 @@ interface UsersConfigInterface {
 
 async function getUsers(searchUSersParameters: UsersConfigInterface) {
   const { url, method, access_token, version, count, ...more } = searchUSersParameters;
-  const moreString = Object.entries(more).map(([key, value]) => key + "=" + value).join("&");
+  const moreString = Object.entries(more).filter(item => item[1]).map(([key, value]) => key + "=" + value).join("&");
   const apiUrl = `${url}/method/${method}?access_token=${access_token}&v=${version}&q=&count=${count}&${moreString}`;
   return fetch(apiUrl);
 }
