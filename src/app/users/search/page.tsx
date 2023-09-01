@@ -36,7 +36,6 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
     .then(x => x.json()).then(x => x.response.items);
 
   if (!response?.response) {
-    toast.error(JSON.stringify(response, null, 2))
     return <>
       <h1>Пользователи </h1>
       <Filter cities={cities} searchParams={props.searchParams} />

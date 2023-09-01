@@ -21,13 +21,18 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={inter.className}>
-        <header>
-          <ul>
-            <li><Link href={"/groups/search"}>groups</Link></li>
-            <li><Link href={"/users/search"}>users.search</Link></li>
-          </ul>
-        </header>
-        {children}
+
+        <div className="d-flex">
+          <div className='pe-3'>
+            <ul>
+              <li><Link className="text-nowrap" href={"/groups/search"}>groups</Link></li>
+              <li><Link className="text-nowrap" href={"/users/search"}>users.search</Link></li>
+              <li><Link className="text-nowrap" href={"/users/db"}>users from db</Link></li>
+            </ul>
+          </div>
+          <div>{children}</div>
+        </div>
+
         <ToastContainer />
       </body>
     </html>
