@@ -2,6 +2,8 @@ import Link from "next/link";
 import Filter from "./filter";
 import { db_connection } from "@/app/components/db";
 import { toast } from "react-toastify";
+import { UserFromVKUnterface, UsersConfigInterface } from "@/app/types/user";
+import getUsers from "@/app/components/getUsers";
 
 export interface SearchUsersInterface {
   city: number
@@ -41,7 +43,7 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
       <Filter cities={cities} searchParams={props.searchParams} />
     </>
   }
-  const { count, items: users }: { count: number, items: UserUnterface[] } = response.response;
+  const { count, items: users }: { count: number, items: UserFromVKUnterface[] } = response.response;
 
 
   let appended = 0;
@@ -115,40 +117,6 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
   </>
 }
 
-interface UserUnterface {
-  id: number,
-  photo_200: string,
-  can_write_private_message: 0 | 1,
-  // track_code: 86e836f41XBVawr0aGGAQzgZKjaPCkMBfvNB_BfL-mmIjvpJRH-yGUE7W549adUWCaTxsD8LKw948EH8Ga2IAA,
-  first_name: string,
-  last_name: string,
-  can_access_closed: boolean,
-  is_closed: boolean
-  bdate?: string
-  online: any
-  relation: number
-}
-
-
-interface UsersConfigInterface {
-  url: string
-  method: string
-  access_token: string
-  version: string
-  count: number
-  q: string
-  city: number
-  sex: number
-  offset: number
-  fields: string
-}
-
-async function getUsers(searchUSersParameters: UsersConfigInterface) {
-  const { url, method, access_token, version, count, ...more } = searchUSersParameters;
-  const moreString = Object.entries(more).filter(item => item[1]).map(([key, value]) => key + "=" + value).join("&");
-  const apiUrl = `${url}/method/${method}?access_token=${access_token}&v=${version}&q=&count=${count}&${moreString}`;
-  return fetch(apiUrl);
-}
 
 
 const searchCitiesParameters = {
