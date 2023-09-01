@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Filter from "./filter";
+import { db_connection } from "@/app/components/db";
+import { use } from "react";
 
 export interface SearchUsersInterface {
   city: number
@@ -36,9 +38,35 @@ export default async function Page(props: { searchParams: SearchUsersInterface }
     <Filter cities={cities} searchParams={props.searchParams} />
   </>
 
-
   const { count, items: users }: { count: number, items: UserUnterface[] } = response;
 
+  // console.log(users);
+
+
+  for (let index = 0; index < users.length; index++) {
+    const user = users[index];
+    // console.log(user);
+
+
+
+    db_connection.query(
+      "INSERT INTO users (fio, link, friends, is_closed, relation, can_write_private_message ) VALUES (?,?,?,?,?,?)",
+      [
+        `${user.first_name} ${user.last_name}`,
+        user.id,
+        "",
+        user.is_closed,
+        user.relation,
+        user.can_write_private_message
+      ],
+      function (err, res) {
+        console.log({ err, res });
+
+      }
+    )
+
+    break;
+  }
 
   return <>
     <h1>users {count}</h1>
