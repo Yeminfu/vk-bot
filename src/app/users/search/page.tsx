@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Filter from "./filter";
 import { db_connection } from "@/app/components/db";
-import { toast } from "react-toastify";
-import { UserFromVKUnterface, UsersConfigInterface } from "@/app/types/user";
+import { UserFromVKUnterface } from "@/app/types/user";
 import getUsers from "@/app/components/getUsers";
 
 export interface SearchUsersInterface {
