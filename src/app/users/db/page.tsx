@@ -22,11 +22,12 @@ export default async function Page(props: { searchParams: { page: string } }) {
     return <>
         <h1>users</h1>
 
+        <Paginator page={page} pages={pages} />
         <div className="my-2">{JSON.stringify({ total, pages: pages })}</div>
         <div className="row">
-            {users.map((user, i) => <div key={user.id} className="col-lg-3">
-                <Client user={user} images={images[i]}/>
-            </div>)}
+            {users.map((user, i) =>
+                <Client key={user.id} user={user} images={images[i]} />
+            )}
         </div>
         <Paginator page={page} pages={pages} />
     </>
