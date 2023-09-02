@@ -1,6 +1,7 @@
 import { db_connection } from "@/app/components/db"
 import { userFromDbInterface } from "@/app/types/user";
 import Paginator from "./pagination";
+import Client from "./userCLient";
 
 export default async function Page(props: { searchParams: { page: string } }) {
 
@@ -23,23 +24,8 @@ export default async function Page(props: { searchParams: { page: string } }) {
 
         <div className="my-2">{JSON.stringify({ total, pages: pages })}</div>
         <div className="row">
-            {users.map((user, i) => <div key={user.id} className="col-3">
-                <div className="card mb-4">
-                    <div className="card-header">
-                        {user.fio}
-                    </div>
-                    <div className="card-body">
-                        <a href={`https://vk.com/id${user.link}`} target="_blank">
-                            {images[i].map(image => <div key={image.id}>
-                                <img src={image.name} alt="" style={{ width: "100%" }} />
-                            </div>)}
-                        </a>
-                        <div className="d-flex mt-2 justify-content-between">
-                            <div className="btn btn-sm btn-outline-success">like</div>
-                            <div className="btn btn-sm btn-outline-danger">diss</div>
-                        </div>
-                    </div>
-                </div>
+            {users.map((user, i) => <div key={user.id} className="col-lg-3">
+                <Client user={user} images={images[i]}/>
             </div>)}
         </div>
         <Paginator page={page} pages={pages} />
@@ -50,7 +36,13 @@ export default async function Page(props: { searchParams: { page: string } }) {
 async function getUsersFromDb(limit: number, offset: number): Promise<userFromDbInterface[]> {
     return await new Promise(resolve => {
         db_connection.query(
-            `SELECT * FROM users WHERE can_write_private_message = 1 AND (relation IS NULL OR relation IN (1,7,6,0) ) AND city = 'Хабаровск' LIMIT ${offset}, ${limit}`,
+            `SELECT * FROM users 
+                WHERE 
+                    can_write_private_message = 1 
+                    AND (relation IS NULL OR relation IN (1,7,6,0) ) 
+                    AND city = 'Хабаровск'
+                    AND (like_status IS NULL OR like_status = 1)
+            LIMIT ${offset}, ${limit}`,
             function (err, res: any) {
                 if (err) {
                     console.log('err #fjfjsJHn88', err);
@@ -65,7 +57,12 @@ async function getUsersFromDb(limit: number, offset: number): Promise<userFromDb
 async function getTotalUsers(): Promise<number> {
     return await new Promise(resolve => {
         db_connection.query(
-            `SELECT COUNT(*) AS count FROM users WHERE can_write_private_message = 1 AND (relation IS NULL OR relation IN (1,7,6,0) AND city = 'Хабаровск' )`,
+            `SELECT COUNT(*) AS count FROM users 
+                WHERE 
+                    can_write_private_message = 1 
+                    AND (relation IS NULL OR relation IN (1,7,6,0) 
+                    AND city = 'Хабаровск' )
+                    AND (like_status IS NULL OR like_status = 1)`,
             function (err, res: any) {
                 if (err) {
                     console.log('err #fjfjsJHn88', err);

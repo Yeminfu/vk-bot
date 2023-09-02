@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className={inter.className}>
 
-        <div className="d-flex">
+        <div className="d-sm-flex">
           <div className='pe-3'>
             <ul>
               <li><Link className="text-nowrap" href={"/groups/search"}>groups</Link></li>

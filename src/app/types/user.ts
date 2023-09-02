@@ -7,6 +7,7 @@ export interface userFromDbInterface {
   "relation": number,
   "city": null,
   "can_write_private_message": number
+  "like_status": number
 }
 
 
