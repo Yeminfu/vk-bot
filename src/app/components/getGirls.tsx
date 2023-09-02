@@ -21,7 +21,7 @@ export default function GetGirls() {
 
     return <>
         <h1>get girls</h1>
-        names { names.length}
+        {log.length} из {names.length}
         <button
             onClick={async () => {
 

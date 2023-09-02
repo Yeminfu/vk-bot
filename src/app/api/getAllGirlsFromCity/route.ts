@@ -33,6 +33,7 @@ export async function POST(res: any) {
             break pages;
         } else {
             const { response: { count, items } } = usersResponse;
+
             appended += await saveUsers(items);
             offset += 999;
             if (offset > 3000) break pages;
@@ -70,8 +71,8 @@ async function saveUsers(users: UserFromVKUnterface[]): Promise<number> {
         const user = users[index];
         const newUser: number | null = await new Promise(resolve => {
             db_connection.query(
-                "INSERT INTO users (fio, link, friends, is_closed, relation, can_write_private_message ) VALUES (?,?,?,?,?,?)",
-                [`${user.first_name} ${user.last_name}`, user.id, "", user.is_closed, user.relation, user.can_write_private_message],
+                "INSERT INTO users (fio, link, friends, is_closed, relation, can_write_private_message, city ) VALUES (?,?,?,?,?,?,?)",
+                [`${user.first_name} ${user.last_name}`, user.id, "", user.is_closed, user.relation, user.can_write_private_message, user.city ? user.city.title : null],
                 function (err, res: any) {
                     if (err) {
                         resolve(null);

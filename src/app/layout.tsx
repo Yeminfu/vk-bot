@@ -30,7 +30,7 @@ export default function RootLayout({
               <li><Link className="text-nowrap" href={"/users/db"}>users from db</Link></li>
             </ul>
           </div>
-          <div>{children}</div>
+          <div className='flex-fill'>{children}</div>
         </div>
 
         <ToastContainer />
