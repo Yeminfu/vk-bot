@@ -66,7 +66,7 @@ async function getTotalUsers(): Promise<number> {
                     AND (like_status IS NULL OR like_status = 1)`,
             function (err, res: any) {
                 if (err) {
-                    console.log('err #fjfjsJHn88', err);
+                    console.log('err #fjfjd3Hn88', err);
                     resolve(0);
                 }
                 resolve(res.pop().count);
