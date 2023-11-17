@@ -20,7 +20,7 @@ export default function GetGirls() {
     const log = useStore($log);
 
     return <>
-        <h1>get girls</h1>
+        {/* <h1>get girls</h1> */}
         {log.length} из {names.length}
         <button
             onClick={async () => {
