@@ -6,7 +6,7 @@ export default function Pagination() {
     const route = useRouter();
 
     return <>
-        {Array.from({ length: 100 }, (_, i) => <button
+        {Array.from({ length: 100 }, (_, i) => <button key={i}
             onClick={() => {
                 const { pathname } = window.location;
                 // const qs = Object.entries(data).filter(v => !!v[1]).map(v => `${v[0]}=${v[1]}`).join("&");
