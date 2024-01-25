@@ -7,7 +7,7 @@ export default async function Page(props: { searchParams: { page: string } }) {
 
     const page = (Number(props?.searchParams?.page)) || 1;
     const per_page = 100;
-    const offset = (page - 1) * 10;
+    const offset = (page - 1) * per_page;
 
 
     const total = await getTotalUsers();
@@ -36,25 +36,20 @@ export default async function Page(props: { searchParams: { page: string } }) {
 
 async function getUsersFromDb(limit: number, offset: number): Promise<userFromDbInterface[]> {
     console.log({ limit, offset });
-
-    return await new Promise(resolve => {
-        db_connection.query(
-            `SELECT * FROM users 
-                WHERE 
-                    can_write_private_message = 1 
-                    AND (relation IS NULL OR relation IN (1,7,6,0) ) 
-                    AND city = 'Хабаровск'
-                    AND (like_status IS NULL)
-            LIMIT ${offset}, ${limit}`,
-            function (err, res: any) {
-                if (err) {
-                    console.log('err #fjfjsJHn88', err);
-                    resolve([]);
-                }
-                resolve(res);
-            }
-        )
-    })
+    return db_connection.promise().query(`SELECT * FROM users 
+        WHERE 
+            can_write_private_message = 1 
+            AND (relation IS NULL OR relation IN (1,7,6,0) ) 
+            AND city = 'Хабаровск'
+            AND (like_status IS NULL)
+        LIMIT ?, ?`,
+        [offset, limit]
+    )
+        .then(([x]: any) => x)
+        .catch((error: any) => {
+            console.error('#mf9f7', error);
+            return [];
+        })
 }
 
 async function getTotalUsers(): Promise<number> {
