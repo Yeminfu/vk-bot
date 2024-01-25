@@ -35,7 +35,6 @@ export default async function Page(props: { searchParams: { page: string } }) {
 }
 
 async function getUsersFromDb(limit: number, offset: number): Promise<userFromDbInterface[]> {
-    console.log({ limit, offset });
     return db_connection.promise().query(`SELECT * FROM users 
         WHERE 
             can_write_private_message = 1 
@@ -53,23 +52,19 @@ async function getUsersFromDb(limit: number, offset: number): Promise<userFromDb
 }
 
 async function getTotalUsers(): Promise<number> {
-    return await new Promise(resolve => {
-        db_connection.query(
-            `SELECT COUNT(*) AS count FROM users 
-                WHERE 
-                    can_write_private_message = 1 
-                    AND (relation IS NULL OR relation IN (1,7,6,0) 
-                    AND city = 'Хабаровск' )
-                    AND (like_status IS NULL OR like_status = 1)`,
-            function (err, res: any) {
-                if (err) {
-                    console.log('err #fjfjd3Hn88', err);
-                    resolve(0);
-                }
-                resolve(res.pop().count);
-            }
-        )
-    })
+    return db_connection.promise().query(
+        `SELECT COUNT(*) AS count FROM users 
+            WHERE 
+                can_write_private_message = 1 
+                AND (relation IS NULL OR relation IN (1,7,6,0) ) 
+                AND city = 'Хабаровск'
+                AND (like_status IS NULL)`
+    )
+        .then(([users]: any) => users)
+        .catch((error: any) => {
+            console.error('#0duu', error);
+            return [];
+        })
 }
 
 async function getImagesFromDb(user_id: number): Promise<ImageFromDbInterface[]> {
