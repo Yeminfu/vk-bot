@@ -60,11 +60,26 @@ async function getTotalUsers(): Promise<number> {
                 AND city = 'Хабаровск'
                 AND (like_status IS NULL)`
     )
-        .then(([users]: any) => users)
+        .then(([users]: any) => users.pop().count)
         .catch((error: any) => {
             console.error('#0duu', error);
-            return [];
+            return 0;
         })
+
+    //     return await new Promise(resolve => {
+    //         db_connection.query(
+    // ,
+    //             function (err, res: any) {
+    //                 if (err) {
+    //                     console.log('err #fjfjd3Hn88', err);
+    //                     resolve(0);
+    //                 }
+    //                 resolve(res.pop().count);
+    //             }
+    //         )
+    //     })
+
+
 }
 
 async function getImagesFromDb(user_id: number): Promise<ImageFromDbInterface[]> {
