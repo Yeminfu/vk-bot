@@ -35,6 +35,8 @@ export default async function Page(props: { searchParams: { page: string } }) {
 }
 
 async function getUsersFromDb(limit: number, offset: number): Promise<userFromDbInterface[]> {
+    console.log({ limit, offset });
+
     return await new Promise(resolve => {
         db_connection.query(
             `SELECT * FROM users 
