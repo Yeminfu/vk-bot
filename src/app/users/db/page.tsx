@@ -38,7 +38,8 @@ async function getUsersFromDb(limit: number, offset: number): Promise<userFromDb
     return db_connection.promise().query(`SELECT * FROM users 
         WHERE 
             can_write_private_message = 1 
-            AND (relation IS NULL OR relation IN (1,7,6,0) ) 
+            AND is_closed = 0
+            AND last_seen_date  >= DATE_SUB(NOW(), INTERVAL 2 DAY)
             AND city = 'Хабаровск'
             AND (like_status IS NULL)
         LIMIT ?, ?`,
@@ -56,6 +57,8 @@ async function getTotalUsers(): Promise<number> {
         `SELECT COUNT(*) AS count FROM users 
             WHERE 
                 can_write_private_message = 1 
+                AND is_closed = 0
+                AND last_seen_date  >= DATE_SUB(NOW(), INTERVAL 2 DAY)
                 AND (relation IS NULL OR relation IN (1,7,6,0) ) 
                 AND city = 'Хабаровск'
                 AND (like_status IS NULL)`

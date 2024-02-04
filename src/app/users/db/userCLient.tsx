@@ -13,8 +13,9 @@ export default function Client({ user, images }: { user: userFromDbInterface; im
             <div className="card mb-4">
                 <div className="card-header">
                     {user.fio}
-                    {JSON.stringify([like_status], null, 2)}
+                    {JSON.stringify([like_status,], null, 2)}
                 </div>
+                <div>{JSON.stringify(user.bdate)}</div>
                 <div className="card-body">
                     <a href={`https://vk.com/id${user.link}`} target="_blank">
                         {images.map(image => <div key={image.id}>
@@ -23,14 +24,17 @@ export default function Client({ user, images }: { user: userFromDbInterface; im
                     </a>
                     {
                         (() => {
-                            if (like_status === null) return <>
-                                <LikeStatusSetter status={1} user={user.id} callBack={() => {
+                            if (like_status === null) return <div className="d-flex mt-2">
+                                <div className="me-2"><LikeStatusSetter status={1} user={user.id} callBack={() => {
                                     setLikeStatus(1);
-                                }} />
-                                <LikeStatusSetter status={0} user={user.id} callBack={() => {
-                                    setLikeStatus(0);
-                                }} />
-                            </>
+                                }} /></div>
+                                <div>
+                                    <LikeStatusSetter status={0} user={user.id} callBack={() => {
+                                        setLikeStatus(0);
+                                    }} />
+                                </div>
+
+                            </div>
                             if (like_status === 0) return <>залупа</>
                             if (like_status === 1) return <>збс</>
 

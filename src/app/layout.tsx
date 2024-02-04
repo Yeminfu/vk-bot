@@ -28,6 +28,7 @@ export default function RootLayout({
               <li><Link className="text-nowrap" href={"/groups/search"}>groups</Link></li>
               <li><Link className="text-nowrap" href={"/users/search"}>users.search</Link></li>
               <li><Link className="text-nowrap" href={"/users/db"}>users from db</Link></li>
+              <li><Link className="text-nowrap" href={"/users/get-full"}>users get full</Link></li>
             </ul>
           </div>
           <div className='flex-fill'>{children}</div>
