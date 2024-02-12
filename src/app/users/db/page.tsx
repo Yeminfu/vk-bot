@@ -39,7 +39,8 @@ async function getUsersFromDb(limit: number, offset: number): Promise<userFromDb
         WHERE 
             can_write_private_message = 1 
             AND is_closed = 0
-            AND last_seen_date  >= DATE_SUB(NOW(), INTERVAL 2 DAY)
+            AND last_seen_date  >= DATE_SUB("2024-02-04 23:43:53", INTERVAL 2 DAY)
+            AND bdate is not null AND bdate REGEXP '[0-9]+\.[0-9]+\.[0-9]+'
             AND city = 'Хабаровск'
             AND (like_status IS NULL)
         LIMIT ?, ?`,
@@ -58,7 +59,9 @@ async function getTotalUsers(): Promise<number> {
             WHERE 
                 can_write_private_message = 1 
                 AND is_closed = 0
-                AND last_seen_date  >= DATE_SUB(NOW(), INTERVAL 2 DAY)
+                AND last_seen_date  >= DATE_SUB("2024-02-04 23:43:53", INTERVAL 2 DAY)
+                AND bdate is not null 
+                AND bdate REGEXP '[0-9]+\.[0-9]+\.[0-9]+'
                 AND (relation IS NULL OR relation IN (1,7,6,0) ) 
                 AND city = 'Хабаровск'
                 AND (like_status IS NULL)`
