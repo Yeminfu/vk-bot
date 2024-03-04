@@ -7,7 +7,7 @@ export default async function Page(props: { searchParams: { page: string } }) {
 
     const page = (Number(props?.searchParams?.page)) || 1;
     const per_page = 100;
-    const offset = (page - 1) * 10;
+    const offset = (page - 1) * per_page;
 
 
     const total = await getTotalUsers();
