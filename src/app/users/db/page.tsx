@@ -45,6 +45,7 @@ async function getUsersFromDb(limit: number, offset: number): Promise<userFromDb
             AND (relation IS NULL OR relation IN (1,7,6,0) ) 
             AND city = 'Хабаровск'
             AND (like_status IS NULL)
+            AND (YEAR(STR_TO_DATE(bdate, '%d.%m.%Y')) BETWEEN 1990 AND 1999)
         LIMIT ?, ?`,
         [offset, limit]
     )
@@ -66,7 +67,9 @@ async function getTotalUsers(): Promise<number> {
                 AND bdate REGEXP '[0-9]+\.[0-9]+\.[0-9]+'
                 AND (relation IS NULL OR relation IN (1,7,6,0) ) 
                 AND city = 'Хабаровск'
-                AND (like_status IS NULL)`
+                AND (like_status IS NULL)
+                AND (YEAR(STR_TO_DATE(bdate, '%d.%m.%Y')) BETWEEN 1990 AND 1999)
+                `
     )
         .then(([users]: any) => users.pop().count)
         .catch((error: any) => {
